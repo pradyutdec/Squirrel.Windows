@@ -29,13 +29,14 @@ namespace Squirrel
             if (!File.Exists(executable)) return null;
             var fullname = Path.GetFullPath(executable);
 
-            return Utility.Retry<int?>(() => 
+            return Utility.Retry<int?>(() =>
                 GetAssemblySquirrelAwareVersion(fullname) ?? GetVersionBlockSquirrelAwareValue(fullname));
         }
 
         static int? GetAssemblySquirrelAwareVersion(string executable)
         {
-            try {
+            try
+            {
                 using (var assembly = AssemblyDefinition.ReadAssembly(executable))
                 {
                     if (!assembly.HasCustomAttributes) return null;
@@ -59,7 +60,7 @@ namespace Squirrel
 
                     return result;
                 }
-            } 
+            }
             catch (FileLoadException) { return null; }
             catch (BadImageFormatException) { return null; }
         }
@@ -75,7 +76,8 @@ namespace Squirrel
             if (!NativeMethods.GetFileVersionInfo(executable, 0, size, buf)) return null;
 
             IntPtr result; int resultSize;
-            if (!NativeMethods.VerQueryValue(buf, "\\StringFileInfo\\040904B0\\SquirrelAwareVersion", out result, out resultSize)) {
+            if (!NativeMethods.VerQueryValue(buf, "\\StringFileInfo\\040904B0\\SquirrelAwareVersion", out result, out resultSize))
+            {
                 return null;
             }
 
